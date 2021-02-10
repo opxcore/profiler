@@ -92,7 +92,7 @@ class Profiler implements ProfilerInterface
 
         $this->profiling[] = [
             'action_name' => $action,
-            'started_at' => $startTimestamp ?? $now,
+            'started_at' => isset($startTimestamp) ? $startTimestamp - $this->startTime : $now - $this->startTime,
             'execution_time' => isset($startTimestamp) ? $now - $startTimestamp : null,
             'used_memory' => isset($startMemory) ? $memory - $startMemory: null,
             'total_memory' => $memory,
