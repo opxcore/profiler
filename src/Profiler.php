@@ -46,25 +46,30 @@ class Profiler implements ProfilerInterface
     /**
      * Start profiling stopwatch.
      *
-     * @param string $action
+     * @param string $action Action name is used to display name of entry
+     * @param int|null $timestamp Externally captured time
+     * @param int|null $memory Externally captured memory usage
      *
      * @return  void
      */
-    public function start(string $action): void
+    public function start(string $action, ?int $timestamp = null, ?int $memory = null): void
     {
         if (!$this->enabled) {
             return;
         }
 
-        $this->actions[$action] = hrtime(true);
+        $this->actions[$action] = [
+            'timestamp' => $timestamp ?? hrtime(true),
+            'memory' => $memory ?? memory_get_usage(),
+        ];
     }
 
     /**
      * Write action to profiling or get whole profiling list.
      *
-     * @param string $action
-     * @param int|null $timestamp
-     * @param int|null $memory
+     * @param string $action Action name is used to display name of entry
+     * @param int|null $timestamp Externally captured time
+     * @param int|null $memory Externally captured memory usage
      *
      * @return  void
      */
@@ -73,19 +78,25 @@ class Profiler implements ProfilerInterface
         if ($this->enabled === false) {
             return;
         }
-        $now = (int)hrtime(true);
-        $executionTime = array_key_exists($action, $this->actions) ? ($now - $this->actions[$action]) : null;
-        $timeStamp = $timestamp ?? ($now - $this->startTime - $executionTime ?? 0);
+
+        $memory = $memory ?? memory_get_usage();
+        $now = $timestamp ?? (int)hrtime(true);
+
+        if (array_key_exists($action, $this->actions)) {
+            $startTimestamp = $this->actions[$action]['timestamp'];
+            $startMemory = $this->actions[$action]['memory'];
+        }
+
         $stack = debug_backtrace(0);
-        // Exclude profilingStop() function call from stacktrace
         array_shift($stack);
 
         $this->profiling[] = [
-            'action' => $action,
-            'timestamp' => $timeStamp,
-            'time' => $executionTime,
-            'memory' => $memory ?? memory_get_usage(),
-            'stack' => $stack,
+            'action_name' => $action,
+            'started_at' => $startTimestamp ?? $now,
+            'execution_time' => isset($startTimestamp) ? $now - $startTimestamp : null,
+            'used_memory' => isset($startMemory) ? $memory - $startMemory: null,
+            'total_memory' => $memory,
+            'trace' => $stack,
         ];
 
         unset($this->actions[$action]);
@@ -104,7 +115,7 @@ class Profiler implements ProfilerInterface
 
         // Order profiled items by timestamp
         usort($this->profiling, static function ($a, $b) {
-            return $a['timestamp'] <=> $b['timestamp'];
+            return $a['started_at'] <=> $b['started_at'];
         });
 
         return $this->profiling;
