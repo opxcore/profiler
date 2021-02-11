@@ -1,6 +1,6 @@
 {
-  "name": "opxcore/app-profiler",
-  "description": "The OpxCore application profiler.",
+  "name": "opxcore/profiler",
+  "description": "The OpxCore profiler.",
   "keywords": [
     "opxcore",
     "application",
@@ -10,8 +10,8 @@
   "type": "library",
   "homepage": "https://opxcore.com",
   "support": {
-    "issues": "https://github.com/opxcore/app-profiler/issues",
-    "source": "https://github.com/opxcore/app-profiler"
+    "issues": "https://github.com/opxcore/profiler/issues",
+    "source": "https://github.com/opxcore/profiler"
   },
   "authors": [
     {
@@ -21,15 +21,15 @@
   ],
   "require": {
     "php": "^7.4",
-    "opxcore/app-profiler-interface": "^1.1.4"
+    "opxcore/profiler-interface": "^1.2.1"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5.2"
   },
   "autoload": {
     "psr-4": {
-      "OpxCore\\App\\": "src/",
-      "OpxCore\\Tests\\App\\": "tests/"
+      "OpxCore\\Profiler\\": "src/",
+      "OpxCore\\Tests\\Profiler\\": "tests/"
     }
   },
   "prefer-stable": true,
