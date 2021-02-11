@@ -1,5 +1,11 @@
 # Profiler
 
+[![Build Status](https://www.travis-ci.com/opxcore/profiler.svg?branch=main)](https://www.travis-ci.com/opxcore/profiler)
+[![Coverage Status](https://coveralls.io/repos/github/opxcore/profiler/badge.svg?branch=main)](https://coveralls.io/github/opxcore/profiler?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/opxcore/profiler/v/stable)](https://packagist.org/packages/opxcore/profiler)
+[![Total Downloads](https://poser.pugx.org/opxcore/profiler/downloads)](https://packagist.org/packages/opxcore/profiler)
+[![License](https://poser.pugx.org/opxcore/profiler/license)](https://packagist.org/packages/opxcore/profiler)
+
 ## Creating
 
 Just create new profiler class instance, and it is ready to use. You can pass externally captured profiling start time
