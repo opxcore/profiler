@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace OpxCore\App;
+namespace OpxCore\Profiler;
 
-use OpxCore\App\Interfaces\ProfilerInterface;
+use OpxCore\Profiler\Interfaces\ProfilerInterface;
 
 class Profiler implements ProfilerInterface
 {
@@ -70,10 +70,11 @@ class Profiler implements ProfilerInterface
      * @param string $action Action name is used to display name of entry
      * @param int|null $timestamp Externally captured time
      * @param int|null $memory Externally captured memory usage
+     * @param array|null $stacktrace Externally captured stacktrace
      *
      * @return  void
      */
-    public function stop(string $action, ?int $timestamp = null, ?int $memory = null): void
+    public function stop(string $action, ?int $timestamp = null, ?int $memory = null, ?array $stacktrace = null): void
     {
         if ($this->enabled === false) {
             return;
@@ -87,14 +88,16 @@ class Profiler implements ProfilerInterface
             $startMemory = $this->actions[$action]['memory'];
         }
 
-        $stack = debug_backtrace(0);
-        array_shift($stack);
+        if (($stack = $stacktrace) === null) {
+            $stack = debug_backtrace(0);
+            array_shift($stack);
+        }
 
         $this->profiling[] = [
             'action_name' => $action,
             'started_at' => isset($startTimestamp) ? $startTimestamp - $this->startTime : $now - $this->startTime,
             'execution_time' => isset($startTimestamp) ? $now - $startTimestamp : null,
-            'used_memory' => isset($startMemory) ? $memory - $startMemory: null,
+            'used_memory' => isset($startMemory) ? $memory - $startMemory : null,
             'total_memory' => $memory,
             'trace' => $stack,
         ];
